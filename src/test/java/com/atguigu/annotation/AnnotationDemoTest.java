@@ -2,6 +2,9 @@ package com.atguigu.annotation;
 
 import org.junit.Test;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,13 +55,89 @@ public class AnnotationDemoTest {
         @SuppressWarnings({"rawtype"})
         List list = new ArrayList();
     }
+
+    @Test
+    public void getFieldType(){
+        try {
+            Person p1 = new Person();
+            Class cl = p1.getClass();
+            System.out.println("className : "+cl.getName());
+            Field age = cl.getDeclaredField("age");
+            System.out.println("field name : "+age.getName());
+            Class<?> fieldType = age.getType();
+            System.out.println("field type : "+fieldType.getName());
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+        Double d = 0.00d;
+        System.out.println(d.toString());
+    }
+
+    @Test
+    public void parseAnno(){
+        try {
+            //1.使用类加载器加载类
+            Class c = Class.forName("com.atguigu.annotation.Person");
+            //找到类上面的注解
+            boolean isExist = c.isAnnotationPresent(MyAnnotation.class);
+            if(isExist){
+                //3.拿到注解实例
+                MyAnnotation md = (MyAnnotation) c.getAnnotation(MyAnnotation.class);
+                System.out.println(md.value());
+                //result
+                //initial
+            }
+            //4.找到方法上的注解
+            Method[] ms = c.getMethods();
+            for(Method m : ms){
+                boolean isMExist = m.isAnnotationPresent(MyAnnotation.class);
+                if(isMExist){
+                    MyAnnotation md = (MyAnnotation) c.getAnnotation(MyAnnotation.class);
+                    System.out.println(md.value());
+                }
+            }
+            //另一种方式
+            for(Method m : ms){
+                Annotation[] as = m.getAnnotations();
+                for(Annotation a : as){
+                    if(a instanceof MyAnnotation){
+                        MyAnnotation md = (MyAnnotation) a;
+                        System.out.println(md.value());
+                    }
+                }
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void parseInheritedAnno(){
+        try {
+            //解析继承注解 子类
+            //1.使用类加载器加载类
+            Class c = Class.forName("com.atguigu.annotation.Student");
+            //找到类上面的注解
+            boolean isExist = c.isAnnotationPresent(MyAnnotation.class);
+            if(isExist){
+                //3.拿到注解实例
+                MyAnnotation md = (MyAnnotation) c.getAnnotation(MyAnnotation.class);
+                System.out.println(md.value());
+                //result 获取到了子类注解
+                //initial
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
 
 @MyAnnotation(value = "initial")
 class Person{
 
     @MyAnnotation
-    int age;
+    Integer age;
 
     @Deprecated
     public void eat(){
@@ -69,7 +148,7 @@ class Person{
     }
 }
 
-class student extends Person{
+class Student extends Person{
 
     @Override
     public void walk(){

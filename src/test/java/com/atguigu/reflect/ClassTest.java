@@ -2,6 +2,11 @@ package com.atguigu.reflect;
 
 import org.junit.Test;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+
 public class ClassTest {
 
     /**
@@ -42,6 +47,9 @@ public class ClassTest {
         //方式4：通过类的加载器
         Class<?> clazz6 = ClassLoader.getSystemClassLoader().loadClass("com.atguigu.reflect.Person");
         System.out.println(clazz1 == clazz6);
+
+
+
 
 
     }

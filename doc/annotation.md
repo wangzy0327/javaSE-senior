@@ -317,3 +317,54 @@ public class Date
 
   生命周期为RUNTIME修饰的注解，可以通过反射进行获取。
 
+
+
+#### 解析注解
+
+通过反射获取类、函数或成员上的运行时注解信息，从而实现动态控制程序运行的逻辑。**注意这里注解必须在Runtime才可取到**
+
+[示例代码](../src/test/java/com/atguigu/annotation/AnnotationDemoTest.java)
+
+```java
+	try {
+            //1.使用类加载器加载类
+            Class c = Class.forName("com.atguigu.annotation.Person");
+            //找到类上面的注解
+            boolean isExist = c.isAnnotationPresent(MyAnnotation.class);
+            if(isExist){
+                //3.拿到注解实例
+                MyAnnotation md = (MyAnnotation) c.getAnnotation(MyAnnotation.class);
+                System.out.println(md.value());
+                //result
+                //initial
+            }
+            //4.找到方法上的注解
+            Method[] ms = c.getMethods();
+            for(Method m : ms){
+                boolean isMExist = m.isAnnotationPresent(MyAnnotation.class);
+                if(isMExist){
+                    MyAnnotation md = (MyAnnotation) c.getAnnotation(MyAnnotation.class);
+                    System.out.println(md.value());
+                }
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+```
+
+
+
+#### 注解实战
+
+需求：
+
+1.有一张用户表，字段包括用户ID，用户名，昵称，年龄，性别，所在城市，邮箱，手机号
+
+2.方便的对每个字段或字段的组合条件进行检索，并打印出SQL
+
+3.使用方式足够简单
+
+
+
+[示例代码](../src/main/java/com/atguigu/annotation/practice/Test.java)  [核心逻辑代码](../src/main/java/com/atguigu/annotation/practice/operation/Operate.java)
+
